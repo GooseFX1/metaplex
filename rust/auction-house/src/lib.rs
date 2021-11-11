@@ -1370,8 +1370,6 @@ pub struct AuctionHouse {
     pub can_change_sale_price: bool,
 }
 
-pub const TRADE_STATE_SIZE: usize = 1;
-
 #[error]
 pub enum ErrorCode {
     #[msg("PublicKeyMismatch")]
