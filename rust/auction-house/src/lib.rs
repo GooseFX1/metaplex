@@ -1345,12 +1345,13 @@ pub const AUCTION_HOUSE_SIZE: usize = 8 + //key
 32 + //treasury mint
 32 + //authority
 32 + // creator
-8 + // bump
-8 + // treasury_bump
-8 + // fee_payer_bump
+1 + // bump
+1 + // treasury_bump
+1 + // fee_payer_bump
 2 + // seller fee basis points
 1 + // requires sign off
-200; //padding
+1 + // can change sale price
+220; //padding
 
 #[account]
 pub struct AuctionHouse {
