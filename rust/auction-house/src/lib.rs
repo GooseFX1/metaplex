@@ -319,7 +319,6 @@ pub mod auction_house {
             &[auction_house.bump],
         ];
 
-        let auction_house_key = auction_house.key();
         let wallet_key = wallet.key();
 
         if !wallet.to_account_info().is_signer && !authority.to_account_info().is_signer {
