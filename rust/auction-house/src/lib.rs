@@ -1126,6 +1126,11 @@ pub mod auction_house {
         data[0] = trade_state_bump;
         data_index += 1;
 
+        for item in "buy".as_bytes() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
         // Wallet key data
         for item in wallet_key.to_bytes().iter() {
             data[data_index] = *item;
