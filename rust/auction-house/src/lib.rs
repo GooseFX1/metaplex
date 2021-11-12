@@ -945,9 +945,10 @@ pub mod auction_house {
         }
 
         let ts_info = seller_trade_state.to_account_info();
+        let token_account_key = token_account.key();
+        let wallet_key = wallet.key();
+
         if ts_info.data_is_empty() {
-            let token_account_key = token_account.key();
-            let wallet_key = wallet.key();
             let ts_seeds = [
                 PREFIX.as_bytes(),
                 wallet_key.as_ref(),
@@ -959,20 +960,74 @@ pub mod auction_house {
                 &token_size.to_le_bytes(),
                 &[trade_state_bump],
             ];
+
+            let size: usize = 1 + "sell".as_bytes().len() + 32 + 32 + 32 + 32 + 32
+                & buyer_price.to_le_bytes().len() + token_size.to_le_bytes().len();
+
             create_or_allocate_account_raw(
                 *ctx.program_id,
                 &ts_info,
                 &rent.to_account_info(),
                 &system_program,
                 &fee_payer,
-                TRADE_STATE_SIZE,
+                size,
                 fee_seeds,
                 &ts_seeds,
             )?;
         }
 
         let data = &mut ts_info.data.borrow_mut();
+        let mut data_index = 0;
+
         data[0] = trade_state_bump;
+        data_index += 1;
+
+        for item in "sell".as_bytes() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Wallet key data
+        for item in wallet_key.to_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Auction house key data
+        for item in auction_house_key.to_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Token account key data
+        for item in token_account_key.to_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Auction house treasury mint key data
+        for item in auction_house.treasury_mint.to_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Token account mint key data
+        for item in token_account.mint.to_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Buyer price data
+        for item in buyer_price.to_le_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
+
+        // Token size data
+        for item in token_size.to_le_bytes().iter() {
+            data[data_index] = *item;
+            data_index += 1;
+        }
 
         Ok(())
     }
