@@ -5,7 +5,7 @@ members = [
   "token-entangler/",
   "auction/program",
   "metaplex/program",
-  "auction-house/",
+  # "auction-house/",
   "token-vault/program",
   "token-metadata/program",
   "metaplex/test",
